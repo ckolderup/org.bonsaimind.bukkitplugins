@@ -103,7 +103,7 @@ public class GhostBuster extends JavaPlugin {
 
 		if (!config.containsKey("stillDeadMessage")) {
 			config.put("stillDeadMessage", "You're a ghost, you don't exist, go away.");
-		}
+		}git@github.com:ckolderup/org.bonsaimind.bukkitplugins.git
 
 		if (!helper.exists()) {
 			System.out.println("GhostBuster: Configuration file doesn't exist, dumping now...");
@@ -208,11 +208,13 @@ public class GhostBuster extends JavaPlugin {
 
 				for (Map.Entry<String, Date> ghost : ghosts.entrySet()) {
 					long diff = (now - ghost.getValue().getTime()) / 1000 / 60;
+          long banTime = (Integer) config.get("banTime");
 
-					if (diff < (Integer) config.get("banTime")) {
-						cs.sendMessage(prepareMessage("\"" + ghost.getKey() + "\" is banned for %h:%m", (Integer) config.get("banTime") - diff));
+					if (diff < banTime) {
+						cs.sendMessage(prepareMessage("\"" + ghost.getKey() + "\" is banned for %h:%m", banTime - diff));
 						counter++;
-					}
+					} else if (banTime == -1) {
+            cs.sendMessage("\"" + ghost.getKey() + "\" is banned until this world ends.");
 				}
 
 				if (counter <= 0) {
@@ -273,10 +275,13 @@ public class GhostBuster extends JavaPlugin {
 			Date now = new Date();
 			Date then = ghosts.get(name);
 			long diff = (now.getTime() - then.getTime()) / 1000 / 60;
+      long banTime = (Integer) config.get("banTime");
 
-			if (diff < (Integer) config.get("banTime")) {
-				event.disallow(PlayerLoginEvent.Result.KICK_OTHER, prepareMessage((String) config.get("stillDeadMessage"), (Integer) config.get("banTime") - diff));
-			} else {
+			if (diff < banTime) {
+				event.disallow(PlayerLoginEvent.Result.KICK_OTHER, prepareMessage((String) config.get("stillDeadMessage"), banTime - diff));
+      } else if (banTime == -1) {
+        event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "You have died and will not be allowed back in this world.");
+      } else {
 				ghosts.remove(name);
 				saveGhosts();
 			}
