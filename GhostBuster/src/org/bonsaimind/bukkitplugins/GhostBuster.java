@@ -103,7 +103,7 @@ public class GhostBuster extends JavaPlugin {
 
 		if (!config.containsKey("stillDeadMessage")) {
 			config.put("stillDeadMessage", "You're a ghost, you don't exist, go away.");
-		}git@github.com:ckolderup/org.bonsaimind.bukkitplugins.git
+		}
 
 		if (!helper.exists()) {
 			System.out.println("GhostBuster: Configuration file doesn't exist, dumping now...");
@@ -215,7 +215,8 @@ public class GhostBuster extends JavaPlugin {
 						counter++;
 					} else if (banTime == -1) {
             cs.sendMessage("\"" + ghost.getKey() + "\" is banned until this world ends.");
-				}
+				  }
+        }
 
 				if (counter <= 0) {
 					cs.sendMessage("GhostBuster: No ghosts on this server.");
